@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.counters.databinding.FragmentFirstBinding
 
@@ -19,7 +20,7 @@ class FirstFragment : Fragment() {
         "Title 1",
         "Title 2",
         "Title 3",
-        // Add more titles as needed
+
     )
 
     override fun onCreateView(
@@ -35,14 +36,25 @@ class FirstFragment : Fragment() {
 
         // Set up the RecyclerView
         val adapter = TitleAdapter(titleList) { selectedTitle ->
-            showToast(selectedTitle)
+            val bundle = Bundle()
+            bundle.putString("selectedTitle", selectedTitle)
+
+            val secondFragment = SecondFragment()
+            secondFragment.arguments = bundle
+
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.nav_host_fragment, secondFragment)
+                .addToBackStack(null)
+                .commit()
         }
+
+
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         binding.buttonFirst.setOnClickListener {
             // Navigate to the second fragment
-            // findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
         }
     }
 
